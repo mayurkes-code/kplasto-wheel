@@ -6,6 +6,9 @@ import {
   getFirestore,
   collection,
   addDoc,
+  getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyDJ15kAjGmO_geq7XPMIlGHUCzPzfXMKxc",
@@ -46,7 +49,20 @@ export default function App() {
     return "₹200 OFF";
   };
 
-  const spinWheel = () => {
+ const continueSpin = () => {
+   const checkQuery = query(
+  collection(db, "customers"),
+  where("phone", "==", phone)
+);
+
+getDocs(checkQuery).then((snapshot) => {
+  if (!snapshot.empty) {
+    alert("This WhatsApp number has already used the spin.");
+    return;
+  }
+
+  continueSpin();
+});
     if (!name || !phone) {
       alert("Please enter details");
       return;
