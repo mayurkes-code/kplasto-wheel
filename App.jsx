@@ -1,29 +1,5 @@
 import React, { useState } from "react";
 
-import { initializeApp } from "firebase/app";
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
-const firebaseConfig = {
-  apiKey: "AIzaSyDJ15kAjGmO_geq7XPMIlGHUCzPzfXMKxc",
-  authDomain: "kplastolaunch.firebaseapp.com",
-  projectId: "kplastolaunch",
-  storageBucket: "kplastolaunch.firebasestorage.app",
-  messagingSenderId: "839147346821",
-  appId: "1:839147346821:web:81ed664b1a3c1a6448c2ec",
-  measurementId: "G-K1GVS67FW6"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
 export default function App() {
   const rewards = [
     "₹10 OFF",
@@ -49,20 +25,7 @@ export default function App() {
     return "₹200 OFF";
   };
 
- const continueSpin = () => {
-   const checkQuery = query(
-  collection(db, "customers"),
-  where("phone", "==", phone)
-);
-
-getDocs(checkQuery).then((snapshot) => {
-  if (!snapshot.empty) {
-    alert("This WhatsApp number has already used the spin.");
-    return;
-  }
-
-  continueSpin();
-});
+  const spinWheel = () => {
     if (!name || !phone) {
       alert("Please enter details");
       return;
@@ -72,7 +35,7 @@ getDocs(checkQuery).then((snapshot) => {
 
     const extraRotation = 3600 + Math.floor(Math.random() * 360);
 
-    setRotation(rotation + extraRotation);
+    setRotation((prev) => prev + extraRotation);
 
     setTimeout(() => {
       setResult(reward);
@@ -80,13 +43,6 @@ getDocs(checkQuery).then((snapshot) => {
       const value = reward.replace("₹", "").replace(" OFF", "");
 
       setCoupon(`KP${value}-${phone.slice(-4)}`);
-      addDoc(collection(db, "customers"), {
-  name: name,
-  phone: phone,
-  reward: reward,
-  coupon: `KP${value}-${phone.slice(-4)}`,
-  createdAt: new Date(),
-});
     }, 5000);
   };
 
