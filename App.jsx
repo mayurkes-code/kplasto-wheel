@@ -67,7 +67,6 @@ export default function App() {
     setLoading(true);
 
     try {
-      // CHECK EXISTING NUMBER
       const checkQuery = query(
         collection(db, "customers"),
         where("phone", "==", phone)
@@ -81,7 +80,6 @@ export default function App() {
         return;
       }
 
-      // GENERATE REWARD
       const reward = weightedReward();
 
       const extraRotation =
@@ -116,7 +114,6 @@ export default function App() {
 
         setCoupon(generatedCoupon);
 
-        // SAVE TO FIREBASE
         await addDoc(collection(db, "customers"), {
           name: name,
           phone: phone,
@@ -142,204 +139,206 @@ export default function App() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#f5efe5",
+        backgroundImage: "url('/background.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
         fontFamily: "Arial",
         padding: "30px",
         textAlign: "center",
+        color: "white",
       }}
     >
-      <h1
-        style={{
-          fontSize: "60px",
-          color: "#ff7a00",
-          fontWeight: "900",
-          marginBottom: "10px",
-        }}
-      >
-        K PLASTO
-      </h1>
-
-      <p
-        style={{
-          fontSize: "22px",
-          color: "#333",
-          marginBottom: "40px",
-        }}
-      >
-        Spin & Win Guaranteed Rewards
-      </p>
-
-      {/* WHEEL */}
       <div
         style={{
-          width: "360px",
-          height: "360px",
-          borderRadius: "50%",
-          border: "12px solid #ff7a00",
-          margin: "0 auto",
-          position: "relative",
-          overflow: "hidden",
-          transform: `rotate(${rotation}deg)`,
-          transition: "transform 5s ease-out",
-          background:
-            "conic-gradient(#ff7a00 0deg 72deg,#f7933a 72deg 144deg,#f1b36a 144deg 216deg,#f35b04 216deg 288deg,#cf4307 288deg 360deg)",
-          boxShadow: "0 0 35px rgba(255,122,0,0.4)",
+          background: "rgba(0,0,0,0.45)",
+          minHeight: "100vh",
+          padding: "30px",
+          borderRadius: "30px",
         }}
       >
-        {rewards.map((reward, index) => {
-          const angle = index * 72;
-
-          return (
-            <div
-              key={index}
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform:
-                  `rotate(${angle}deg) translate(0,-130px)`,
-                transformOrigin: "0 0",
-                color: "white",
-                fontWeight: "bold",
-                fontSize: "20px",
-                textShadow: "0 2px 5px rgba(0,0,0,0.4)",
-              }}
-            >
-              {reward}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* POINTER */}
-      <div
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: "22px solid transparent",
-          borderRight: "22px solid transparent",
-          borderTop: "45px solid #ff7a00",
-          margin: "15px auto 35px",
-        }}
-      ></div>
-
-      {/* FORM */}
-      <div
-        style={{
-          maxWidth: "420px",
-          margin: "0 auto",
-          background: "rgba(255,255,255,0.75)",
-          backdropFilter: "blur(10px)",
-          padding: "35px",
-          borderRadius: "28px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+        <h1
           style={{
-            width: "100%",
-            padding: "18px",
-            marginBottom: "18px",
-            borderRadius: "15px",
-            border: "2px solid #ddd",
-            fontSize: "17px",
-            outline: "none",
-          }}
-        />
-
-        <input
-          type="tel"
-          placeholder="WhatsApp Number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "18px",
-            marginBottom: "22px",
-            borderRadius: "15px",
-            border: "2px solid #ddd",
-            fontSize: "17px",
-            outline: "none",
-          }}
-        />
-
-        <button
-          onClick={spinWheel}
-          disabled={loading}
-          style={{
-            width: "100%",
-            background: "#ff7a00",
-            color: "white",
-            padding: "18px",
-            border: "none",
-            borderRadius: "18px",
-            fontSize: "24px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            boxShadow: "0 5px 20px rgba(255,122,0,0.4)",
+            fontSize: "65px",
+            fontWeight: "900",
+            color: "#ff8c00",
+            textShadow: "0 4px 20px rgba(0,0,0,0.5)",
+            marginBottom: "10px",
           }}
         >
-          {loading ? "PLEASE WAIT..." : "SPIN NOW"}
-        </button>
-      </div>
+          K PLASTO
+        </h1>
 
-      {/* RESULT */}
-      {result && (
+        <p
+          style={{
+            fontSize: "24px",
+            marginBottom: "40px",
+            textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+          }}
+        >
+          Spin & Win Guaranteed Rewards
+        </p>
+
+        <div
+          style={{
+            width: "340px",
+            height: "340px",
+            borderRadius: "50%",
+            border: "12px solid #ff8c00",
+            margin: "0 auto",
+            position: "relative",
+            overflow: "hidden",
+            transform: `rotate(${rotation}deg)`,
+            transition: "transform 5s ease-out",
+            background:
+              "conic-gradient(#f97316 0deg 72deg,#fb923c 72deg 144deg,#fdba74 144deg 216deg,#ea580c 216deg 288deg,#c2410c 288deg 360deg)",
+            boxShadow: "0 0 40px rgba(255,140,0,0.6)",
+          }}
+        >
+          {rewards.map((reward, index) => {
+            const angle = index * 72;
+
+            return (
+              <div
+                key={index}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform:
+                    `rotate(${angle}deg) translate(0,-125px)`,
+                  transformOrigin: "0 0",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                  textShadow: "0 2px 5px black",
+                }}
+              >
+                {reward}
+              </div>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            width: 0,
+            height: 0,
+            borderLeft: "20px solid transparent",
+            borderRight: "20px solid transparent",
+            borderTop: "40px solid #ff8c00",
+            margin: "20px auto",
+          }}
+        ></div>
+
         <div
           style={{
             maxWidth: "420px",
-            margin: "35px auto",
-            background: "#ff7a00",
-            color: "white",
+            margin: "30px auto",
+            background: "rgba(255,255,255,0.15)",
+            backdropFilter: "blur(12px)",
             padding: "30px",
             borderRadius: "25px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
           }}
         >
-          <h2>🎉 Congratulations 🎉</h2>
-
-          <h1
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             style={{
-              fontSize: "42px",
-              marginTop: "10px",
+              width: "100%",
+              padding: "15px",
+              marginBottom: "15px",
+              borderRadius: "12px",
+              border: "none",
+              fontSize: "16px",
+            }}
+          />
+
+          <input
+            type="tel"
+            placeholder="WhatsApp Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "15px",
+              marginBottom: "20px",
+              borderRadius: "12px",
+              border: "none",
+              fontSize: "16px",
+            }}
+          />
+
+          <button
+            onClick={spinWheel}
+            disabled={loading}
+            style={{
+              width: "100%",
+              background: "#ff8c00",
+              color: "white",
+              padding: "18px",
+              border: "none",
+              borderRadius: "15px",
+              fontSize: "22px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "0 5px 20px rgba(255,140,0,0.5)",
             }}
           >
-            {result}
-          </h1>
+            {loading ? "PLEASE WAIT..." : "SPIN NOW"}
+          </button>
+        </div>
 
+        {result && (
           <div
             style={{
-              background: "white",
-              color: "#ff7a00",
-              padding: "18px",
-              borderRadius: "15px",
-              marginTop: "20px",
-              fontWeight: "bold",
-              fontSize: "26px",
+              maxWidth: "420px",
+              margin: "30px auto",
+              background: "rgba(255,140,0,0.95)",
+              color: "white",
+              padding: "30px",
+              borderRadius: "25px",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
             }}
           >
-            {coupon}
+            <h2>🎉 Congratulations 🎉</h2>
+
+            <h1>{result}</h1>
 
             <div
               style={{
-                marginTop: "10px",
-                fontSize: "14px",
-                color: "#444",
+                background: "white",
+                color: "#ff8c00",
+                padding: "15px",
+                borderRadius: "12px",
+                marginTop: "20px",
+                fontWeight: "bold",
+                fontSize: "24px",
               }}
             >
-              {timestamp}
-            </div>
-          </div>
+              {coupon}
 
-          <p style={{ marginTop: "18px" }}>
-            Show this coupon at billing counter.
-          </p>
-        </div>
-      )}
+              <div
+                style={{
+                  marginTop: "10px",
+                  fontSize: "14px",
+                  color: "#444",
+                }}
+              >
+                {timestamp}
+              </div>
+            </div>
+
+            <p style={{ marginTop: "15px" }}>
+              Show this coupon at billing counter.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
