@@ -7,6 +7,19 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ15kAjGmO_geq7XPMIlGHUCzPzfXMKxc",
+  authDomain: "kplastolaunch.firebaseapp.com",
+  projectId: "kplastolaunch",
+  storageBucket: "kplastolaunch.firebasestorage.app",
+  messagingSenderId: "839147346821",
+  appId: "1:839147346821:web:81ed664b1a3c1a6448c2ec",
+  measurementId: "G-K1GVS67FW6"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 
 export default function App() {
   const rewards = [
@@ -51,6 +64,13 @@ export default function App() {
       const value = reward.replace("₹", "").replace(" OFF", "");
 
       setCoupon(`KP${value}-${phone.slice(-4)}`);
+      addDoc(collection(db, "customers"), {
+  name: name,
+  phone: phone,
+  reward: reward,
+  coupon: `KP${value}-${phone.slice(-4)}`,
+  createdAt: new Date(),
+});
     }, 5000);
   };
 
