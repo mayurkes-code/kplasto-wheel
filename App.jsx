@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 
+import { initializeApp } from "firebase/app";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+} from "firebase/firestore";
+
 export default function App() {
   const rewards = [
     "₹10 OFF",
