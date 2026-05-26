@@ -1,5 +1,30 @@
 import React, { useState } from "react";
 
+import { initializeApp } from "firebase/app";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ15kAjGmO_geq7XPMIlGHUCzPzfXMKxc",
+  authDomain: "kplastolaunch.firebaseapp.com",
+  projectId: "kplastolaunch",
+  storageBucket: "kplastolaunch.firebasestorage.app",
+  messagingSenderId: "839147346821",
+  appId: "1:839147346821:web:81ed664b1a3c1a6448c2ec",
+  measurementId: "G-K1GVS67FW6"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
 export default function App() {
   const rewards = [
     "₹10 OFF",
@@ -14,6 +39,7 @@ export default function App() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [rotation, setRotation] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const weightedReward = () => {
     const rand = Math.random() * 100;
@@ -25,25 +51,67 @@ export default function App() {
     return "₹200 OFF";
   };
 
-  const spinWheel = () => {
+  const spinWheel = async () => {
     if (!name || !phone) {
-      alert("Please enter details");
+      alert("Please enter your details");
       return;
     }
 
-    const reward = weightedReward();
+    if (phone.length < 10) {
+      alert("Please enter a valid WhatsApp number");
+      return;
+    }
 
-    const extraRotation = 3600 + Math.floor(Math.random() * 360);
+    setLoading(true);
 
-    setRotation((prev) => prev + extraRotation);
+    try {
+      // CHECK IF NUMBER ALREADY EXISTS
+      const checkQuery = query(
+        collection(db, "customers"),
+        where("phone", "==", phone)
+      );
 
-    setTimeout(() => {
-      setResult(reward);
+      const snapshot = await getDocs(checkQuery);
 
-      const value = reward.replace("₹", "").replace(" OFF", "");
+      if (!snapshot.empty) {
+        alert("This WhatsApp number has already used the spin.");
+        setLoading(false);
+        return;
+      }
 
-      setCoupon(`KP${value}-${phone.slice(-4)}`);
-    }, 5000);
+      // GENERATE REWARD
+      const reward = weightedReward();
+
+      const extraRotation = 3600 + Math.floor(Math.random() * 360);
+
+      setRotation((prev) => prev + extraRotation);
+
+      setTimeout(async () => {
+        setResult(reward);
+
+        const value = reward.replace("₹", "").replace(" OFF", "");
+
+        const generatedCoupon = `KP${value}-${phone.slice(-4)}`;
+
+        setCoupon(generatedCoupon);
+
+        // SAVE TO FIREBASE
+        await addDoc(collection(db, "customers"), {
+          name: name,
+          phone: phone,
+          reward: reward,
+          coupon: generatedCoupon,
+          createdAt: new Date(),
+        });
+
+        setLoading(false);
+      }, 5000);
+
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -167,6 +235,7 @@ export default function App() {
 
         <button
           onClick={spinWheel}
+          disabled={loading}
           style={{
             width: "100%",
             background: "#f97316",
@@ -179,7 +248,7 @@ export default function App() {
             cursor: "pointer",
           }}
         >
-          SPIN NOW
+          {loading ? "PLEASE WAIT..." : "SPIN NOW"}
         </button>
       </div>
 
@@ -211,6 +280,10 @@ export default function App() {
           >
             {coupon}
           </div>
+
+          <p style={{ marginTop: "15px" }}>
+            Show this coupon at the billing counter.
+          </p>
         </div>
       )}
     </div>
